@@ -205,7 +205,7 @@ void checkFullJacobianSparseMatrix(const rbd::MultiBody& mb,
   BOOST_CHECK_THROW(jac.sFullJacobian(mb, jacMat, sparseFullJacMatFake2), std::domain_error);
   BOOST_CHECK_THROW(jac.sFullJacobian(mb, jacMat, sparseFullJacMatFake3), std::domain_error);
   BOOST_CHECK_NO_THROW(jac.sFullJacobian(mb, jacMat, sparseFullJacMat));
-  BOOST_CHECK_NO_THROW(jac.sFullJacobian(mb, jacMat, sparseFullJacMat)); // Use pre-allocated version with correct layout (this sum values)
+  BOOST_CHECK_NO_THROW(jac.sFullJacobian(mb, jacMat, sparseFullJacMat)); // Use pre-allocated version with correct layout
 
   MatrixXd fullJacMat(6, mb.nrDof());
   BOOST_CHECK_NO_THROW(jac.sFullJacobian(mb, jacMat, fullJacMat));
@@ -214,7 +214,7 @@ void checkFullJacobianSparseMatrix(const rbd::MultiBody& mb,
   {
     for(int j = 0; j < fullJacMat.cols(); ++j)
     {
-      BOOST_CHECK_SMALL(std::abs(sparseFullJacMat.coeff(i, j) - 2 * fullJacMat(i, j)), 1e-14);
+      BOOST_CHECK_SMALL(std::abs(sparseFullJacMat.coeff(i, j) - fullJacMat(i, j)), 1e-14);
     }
   }
 }
@@ -240,8 +240,8 @@ void checkJacobian(const rbd::MultiBody & mb, const rbd::MultiBodyConfig & mbc, 
 
   // test fullJacobian
   checkFullJacobianMatrix(mb, subMb, jac, jac_mat);
-	// test sparse version
-	checkFullJacobianSparseMatrix(mb, subMb, jac, jac_mat);
+  // test sparse version
+  checkFullJacobianSparseMatrix(mb, subMb, jac, jac_mat);
 
   // test jacobian
   const MatrixXd & jac_mat_w = jac.jacobian(mb, mbc);

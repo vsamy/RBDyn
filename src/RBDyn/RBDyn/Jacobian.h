@@ -257,7 +257,7 @@ public:
     * @param jac Jacobian to project.
     * @param res Projected Sparse Jacobian (matrix size must be defined).
     */
-  void fullJacobian(const MultiBody& mb, const Eigen::Ref<const Eigen::MatrixXd>& jac, Eigen::SparseMatrix<double>& res) const;
+  void fullJacobian(const MultiBody & mb, const Eigen::Ref<const Eigen::MatrixXd> & jac, Eigen::SparseMatrix<double> & res) const;
 
   /**
    * Accumulate the projection of the jacobian in the full
@@ -289,9 +289,9 @@ public:
     * @param jac Jacobian to project.
     * @param res Projected Sparse Jacobian (must be reserved).
     */
-  void setFullJacobian(const MultiBody& mb,
-    const Eigen::Ref<const Eigen::MatrixXd>& jac,
-    Eigen::SparseMatrix<double>& res) const;
+  void setFullJacobian(const MultiBody & mb,
+                       const Eigen::Ref<const Eigen::MatrixXd> & jac,
+                       Eigen::SparseMatrix<double> & res) const;
 
   /**
     * Set the projection of the jacobian in the full (sparse)
@@ -301,18 +301,9 @@ public:
     * @param jac Jacobian to project.
     * @param res Projected Sparse Jacobian (must be reserved).
     */
-  void setFullJacobian(const Blocks& compactPath,
-    const Eigen::Ref<const Eigen::MatrixXd>& jac,
-    Eigen::SparseMatrix<double>& res) const;
-
-  /**
-    * Accumulate the projection of the jacobian in the full (sparse)
-    * robot parameters vector
-    * @param jac Jacobian to project.
-    * @param res Projected Sparse Jacobian (must be reserved and has good layout).
-    */
-  void addFullJacobian(const Eigen::Ref<const Eigen::MatrixXd>& jac,
-    Eigen::SparseMatrix<double>& res) const;
+  void setFullJacobian(const Blocks & compactPath,
+                       const Eigen::Ref<const Eigen::MatrixXd> & jac,
+                       Eigen::SparseMatrix<double> & res) const;
 
   /**
    * Expand a symmetric product of a jacobian by its
@@ -444,7 +435,7 @@ public:
     * @throw std::domain_error If mb don't match jointPath or res
     * size missmatch or res has wrong layout.
     */
-  void sFullJacobian(const MultiBody& mb, const Eigen::MatrixXd& jac, Eigen::SparseMatrix<double>& res) const;
+  void sFullJacobian(const MultiBody & mb, const Eigen::MatrixXd & jac, Eigen::SparseMatrix<double> & res) const;
 
   /** safe version of @see velocity.
    * @throw std::domain_error If mb don't match mbc.

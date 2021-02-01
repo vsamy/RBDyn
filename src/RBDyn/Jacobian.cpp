@@ -478,13 +478,17 @@ void Jacobian::fullJacobian(const MultiBody & mb,
   addFullJacobian(mb, jac, res);
 }
 
-void Jacobian::fullJacobian(const MultiBody& mb,
-                            const Eigen::Ref<const Eigen::MatrixXd>& jac,
-                            Eigen::SparseMatrix<double>& res) const
+void Jacobian::fullJacobian(const MultiBody & mb,
+                            const Eigen::Ref<const Eigen::MatrixXd> & jac,
+                            Eigen::SparseMatrix<double> & res) const
 {
   if (res.data().size() > 0)
   {
-    addFullJacobian(jac, res);
+    // It is suppose the sparse matrix has the correct layout.
+    double* vPtr = res.valuePtr();
+    const double* data = jac.data();
+    for (long i = 0; i < jac.size(); ++i)
+    *(vPtr++) = *(data++);
   }
   else
   {
@@ -517,19 +521,9 @@ void Jacobian::addFullJacobian(const Blocks & compactPath,
   }
 }
 
-void Jacobian::addFullJacobian(const Eigen::Ref<const Eigen::MatrixXd>& jac,
-                               Eigen::SparseMatrix<double>& res) const
-{
-  // It is suppose the sparse matrix has the correct layout.
-  double* vPtr = res.valuePtr();
-  const double* data = jac.data();
-  for (long i = 0; i < jac.size(); ++i)
-    *(vPtr++) += *(data++);
-}
-
-void Jacobian::setFullJacobian(const MultiBody& mb,
-                               const Eigen::Ref<const Eigen::MatrixXd>& jac,
-                               Eigen::SparseMatrix<double>& res) const
+void Jacobian::setFullJacobian(const MultiBody & mb,
+                               const Eigen::Ref<const Eigen::MatrixXd> & jac,
+                               Eigen::SparseMatrix<double> & res) const
 {
   int trackPos = 0; // Help us to catch column of zeros
   int jacPos = 0;
@@ -560,9 +554,9 @@ void Jacobian::setFullJacobian(const MultiBody& mb,
   res.finalize(); // Add remaining empty columns
 }
 
-void Jacobian::setFullJacobian(const Blocks& compactPath,
-                               const Eigen::Ref<const Eigen::MatrixXd>& jac,
-                               Eigen::SparseMatrix<double>& res) const
+void Jacobian::setFullJacobian(const Blocks & compactPath,
+                               const Eigen::Ref<const Eigen::MatrixXd> & jac,
+                               Eigen::SparseMatrix<double> & res) const
 {
   Eigen::DenseIndex trackPos = 0; // Help us to catch column of zeros
   for(const auto & b : compactPath)
@@ -830,7 +824,7 @@ void Jacobian::sFullJacobian(const MultiBody & mb, const Eigen::MatrixXd & jac, 
   fullJacobian(mb, jac, res);
 }
 
-void Jacobian::sFullJacobian(const MultiBody& mb, const Eigen::MatrixXd& jac, Eigen::SparseMatrix<double>& res) const
+void Jacobian::sFullJacobian(const MultiBody & mb, const Eigen::MatrixXd & jac, Eigen::SparseMatrix<double> & res) const
 {
   int m = *std::max_element(jointsPath_.begin(), jointsPath_.end());
   if(m >= static_cast<int>(mb.nrJoints()))
