@@ -7,6 +7,7 @@
 // includes
 // RBDyn
 #include <rbdyn/config.hh>
+#include <Eigen/SparseCore>
 
 #include "MultiBody.h"
 
@@ -251,6 +252,14 @@ public:
   void fullJacobian(const MultiBody & mb, const Eigen::Ref<const Eigen::MatrixXd> & jac, Eigen::MatrixXd & res) const;
 
   /**
+    * Project the jacobian in the full (sparse) robot parameters vector.
+    * @param mb MuliBody used has model.
+    * @param jac Jacobian to project.
+    * @param res Projected Sparse Jacobian (matrix size must be defined).
+    */
+  void fullJacobian(const MultiBody& mb, const Eigen::Ref<const Eigen::MatrixXd>& jac, Eigen::SparseMatrix<double>& res) const;
+
+  /**
    * Accumulate the projection of the jacobian in the full
    * robot parameters vector
    * @param mb MuliBody used has model.
@@ -272,6 +281,38 @@ public:
   void addFullJacobian(const Blocks & compactPath,
                        const Eigen::Ref<const Eigen::MatrixXd> & jac,
                        Eigen::MatrixXd & res) const;
+
+  /**
+    * Set the projection of the jacobian in the full (sparse)
+    * robot parameters vector
+    * @param mb MuliBody used has model.
+    * @param jac Jacobian to project.
+    * @param res Projected Sparse Jacobian (must be reserved).
+    */
+  void setFullJacobian(const MultiBody& mb,
+    const Eigen::Ref<const Eigen::MatrixXd>& jac,
+    Eigen::SparseMatrix<double>& res) const;
+
+  /**
+    * Set the projection of the jacobian in the full (sparse)
+    * robot parameters vector using a compact representation
+    * of the DoF.
+    * @param compacPath Blocks representing the compact
+    * @param jac Jacobian to project.
+    * @param res Projected Sparse Jacobian (must be reserved).
+    */
+  void setFullJacobian(const Blocks& compactPath,
+    const Eigen::Ref<const Eigen::MatrixXd>& jac,
+    Eigen::SparseMatrix<double>& res) const;
+
+  /**
+    * Accumulate the projection of the jacobian in the full (sparse)
+    * robot parameters vector
+    * @param jac Jacobian to project.
+    * @param res Projected Sparse Jacobian (must be reserved and has good layout).
+    */
+  void addFullJacobian(const Eigen::Ref<const Eigen::MatrixXd>& jac,
+    Eigen::SparseMatrix<double>& res) const;
 
   /**
    * Expand a symmetric product of a jacobian by its
@@ -398,6 +439,12 @@ public:
    * size missmatch.
    */
   void sFullJacobian(const MultiBody & mb, const Eigen::MatrixXd & jac, Eigen::MatrixXd & res) const;
+
+  /** safe version of @see fullJacobian.
+    * @throw std::domain_error If mb don't match jointPath or res
+    * size missmatch or res has wrong layout.
+    */
+  void sFullJacobian(const MultiBody& mb, const Eigen::MatrixXd& jac, Eigen::SparseMatrix<double>& res) const;
 
   /** safe version of @see velocity.
    * @throw std::domain_error If mb don't match mbc.
